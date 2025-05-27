@@ -2,6 +2,29 @@
 
 This document provides a concise overview of C++ STL containers for quick revision.
 
+## Utility Containers
+
+### Pair
+
+- Stores **two heterogeneous objects** as a single unit
+- Used extensively with STL algorithms and containers
+- Key components in map/multimap (key-value pairs)
+
+```cpp
+pair<string, int> p1 = {"apple", 5};
+pair<int, double> p2 = make_pair(10, 3.14);
+
+string fruit = p1.first;      // Access first element
+int count = p1.second;        // Access second element
+
+// Automatic comparison (first, then second)
+pair<int, int> a = {1, 10};
+pair<int, int> b = {1, 20};   // a < b is true
+
+// Nested pairs
+pair<int, pair<char, double>> nested = {1, {'a', 3.14}};
+```
+
 ## 1. Sequence Containers
 
 ### Vector
