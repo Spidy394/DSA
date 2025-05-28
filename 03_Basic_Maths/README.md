@@ -139,7 +139,8 @@ bool isPrime(int n) {
             if((n/i) != i) cnt++;
         }
     }
-    return (cnt == 2);
+    if (cnt == 2) return true; 
+    else return false; 
 }
 ```
 
