@@ -8,7 +8,7 @@ int main() {
     // pecompute 
     int hash[26] = {0};
     for(int i =0; i<s.size(); i++){
-        hash[s[i]]++;
+        hash[s[i] - 'a']++;
     }
 
     int q;
@@ -17,8 +17,22 @@ int main() {
         char c;
         cin >> c;
         // fetch
-        cout << hash[c] << endl;
+        cout << hash[c - 'a'] << endl;
     }
 
     return 0;
 }
+
+/*
+    for general case. i.e nature of char in string is unknown
+
+    //precompute 
+    int hash[256] = {0};
+    for(int i=0; i<.sixe(); i++){
+        hash[s[i]]++;
+    // }
+
+    // fetch
+    cout << hash[c] << endl;
+
+*/
