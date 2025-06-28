@@ -1,8 +1,8 @@
-# Sorting Algorithms - Quick Revision Notes
+# Sorting Algorithms - Complete Quick Revision Notes
 
 ## Overview
 
-Sorting algorithms arrange elements in a specific order (ascending/descending). These are fundamental algorithms with different time and space complexities.
+Sorting algorithms arrange elements in a specific order (ascending/descending). This guide covers both basic O(n²) algorithms and advanced O(n log n) algorithms with their implementations and analysis.
 
 ## 1. Selection Sort
 
@@ -114,13 +114,147 @@ void insertion_sort(int arr[], int n){
 - Works well for nearly sorted arrays
 - Online algorithm (can sort as data arrives)
 
-## Quick Comparison
+## 4. Merge Sort
 
-| Algorithm | Best Case | Average Case | Worst Case | Space | Stable | Use Case |
-|-----------|-----------|--------------|------------|-------|--------|----------|
-| Selection Sort | O(n²) | O(n²) | O(n²) | O(1) | No | Memory writes are costly |
-| Bubble Sort | O(n) | O(n²) | O(n²) | O(1) | Yes | Educational purposes |
-| Insertion Sort | O(n) | O(n²) | O(n²) | O(1) | Yes | Small/nearly sorted data |
+### How It Works
+
+- Divide array into two halves recursively
+- Sort both halves independently
+- Merge the sorted halves to get final sorted array
+
+### Code Implementation
+
+```cpp
+void merge(vector<int> &arr, int low, int mid, int high){
+    vector<int> temp;
+    int left = low, right = mid+1;
+    
+    while(left <= mid && right <= high){
+        if(arr[left] <= arr[right]){
+            temp.push_back(arr[left++]);
+        } else {
+            temp.push_back(arr[right++]);
+        }
+    }
+    
+    while(left <= mid) temp.push_back(arr[left++]);
+    while(right <= high) temp.push_back(arr[right++]);
+    
+    for(int i=low; i<=high; i++){
+        arr[i] = temp[i - low];
+    }
+}
+
+void mergeSort(vector<int> &arr, int low, int high){
+    if(low >= high) return;
+    int mid = (low + high) / 2;
+    mergeSort(arr, low, mid);
+    mergeSort(arr, mid+1, high);
+    merge(arr, low, mid, high);
+}
+```
+
+### Time & Space Complexity
+
+- **Time**: O(n log n) for all cases (best, average, worst)
+- **Space**: O(n) - requires extra space for merging
+- **Stability**: Stable (maintains relative order)
+
+### Key Features
+
+- Guaranteed O(n log n) performance
+- Stable sorting algorithm
+- Good for large datasets
+- Predictable performance
+
+## 5. Quick Sort
+
+### How It Works
+
+- Choose a pivot element
+- Partition array: elements ≤ pivot on left, > pivot on right
+- Recursively sort left and right partitions
+
+### Code Implementation
+
+```cpp
+int partition(vector<int> &arr, int low, int high){
+    int pivot = arr[low];
+    int i = low, j = high;
+    
+    while(i < j){
+        while(arr[i] <= pivot && i <= high) i++;
+        while(arr[j] > pivot && j >= low) j--;
+        if(i < j) swap(arr[i], arr[j]);
+    }
+    swap(arr[low], arr[j]);
+    return j;
+}
+
+void quickSort(vector<int> &arr, int low, int high){
+    if(low < high){
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi-1);
+        quickSort(arr, pi+1, high);
+    }
+}
+```
+
+### Time & Space Complexity
+
+- **Time**:
+  - Best/Average: O(n log n)
+  - Worst: O(n²) - when pivot is always smallest/largest
+- **Space**: O(log n) - recursion stack space
+- **Stability**: Not stable
+
+### Key Features
+
+- In-place sorting (except recursion stack)
+- Average case faster than merge sort
+- Cache-friendly due to in-place nature
+- Widely used in practice
+
+## 6. Recursive Variations
+
+### Recursive Bubble Sort
+
+```cpp
+void recBubbleSort(vector<int> &arr, int n){
+    if(n == 1) return;
+    for(int i=0; i<n-1; i++){
+        if(arr[i] > arr[i+1]) swap(arr[i], arr[i+1]);
+    }
+    recBubbleSort(arr, n-1);
+}
+```
+
+### Recursive Insertion Sort
+
+```cpp
+void recInsertionSort(vector<int> &arr, int n){
+    if(n <= 1) return;
+    recInsertionSort(arr, n-1);
+    
+    int last = arr[n-1];
+    int j = n-2;
+    while(j >= 0 && arr[j] > last){
+        arr[j+1] = arr[j];
+        j--;
+    }
+    arr[j+1] = last;
+}
+```
+
+## Complete Algorithm Comparison
+
+| Algorithm | Best Case | Average Case | Worst Case | Space | Stable | In-Place | Use Case |
+|-----------|-----------|--------------|------------|-------|--------|----------|----------|
+| Selection Sort | O(n²) | O(n²) | O(n²) | O(1) | No | Yes | Memory writes costly |
+| Bubble Sort | O(n) | O(n²) | O(n²) | O(1) | Yes | Yes | Educational/Small data |
+| Insertion Sort | O(n) | O(n²) | O(n²) | O(1) | Yes | Yes | Small/Nearly sorted |
+| Merge Sort | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes | No | Large datasets |
+| Quick Sort | O(n log n) | O(n log n) | O(n²) | O(log n) | No | Yes | General purpose |
 
 ## Key Concepts
 
@@ -141,24 +275,54 @@ void insertion_sort(int arr[], int n){
 
 ## When to Use Each Algorithm
 
-### Selection Sort Usage
+### Basic Sorting Algorithms (O(n²))
+
+#### Selection Sort Usage
 
 - When memory writes are expensive
 - When you need exactly n-1 swaps
 - Simple implementation needed
 
-### Bubble Sort Usage
+#### Bubble Sort Usage
 
 - Educational purposes (easy to understand)
 - When stability is required and data is small
-- Rarely used in practice
+- Detecting if array is already sorted
 
-### Insertion Sort Usage
+#### Insertion Sort Usage
 
 - Small datasets (< 50 elements)
 - Nearly sorted data
 - As subroutine in hybrid algorithms (like Timsort)
 - Online sorting requirements
+
+### Advanced Sorting Algorithms (O(n log n))
+
+#### Merge Sort Usage
+
+- When stable sorting is required
+- Large datasets with guaranteed O(n log n) performance
+- External sorting (sorting data that doesn't fit in memory)
+- When worst-case performance matters
+
+#### Quick Sort Usage
+
+- General purpose sorting (most commonly used)
+- When average-case performance is priority
+- In-place sorting requirements
+- Cache-friendly sorting needed
+
+## Algorithm Selection Guide
+
+```text
+Data Size < 50:           Insertion Sort
+Nearly Sorted:            Insertion Sort
+Stability Required:       Merge Sort or Bubble Sort
+Memory Constrained:       Quick Sort or Heap Sort
+Guaranteed Performance:   Merge Sort
+General Purpose:          Quick Sort
+Educational:              Bubble Sort
+```
 
 ## Common Optimizations
 
@@ -179,3 +343,96 @@ void insertion_sort(int arr[], int n){
 - Use 0-based indexing in implementations
 - Loop bounds are crucial for correctness
 - Swap operations can be optimized based on requirements
+
+## Memory Tricks for Quick Revision
+
+### Basic Algorithms
+
+#### Selection Sort - "Select the minimum"
+
+- **Pattern**: Find min → Swap → Move forward
+- **Mnemonic**: "SELECT the smallest, SORT by position"
+- **Key Loop**: Outer loop stops at n-2 (last element auto-sorted)
+
+#### Bubble Sort - "Bubble up the largest"
+
+- **Pattern**: Compare adjacent → Swap if wrong → Largest bubbles to end
+- **Mnemonic**: "BUBBLE the biggest to the back"
+- **Key Loop**: Outer loop decrements from n-1 to 1
+
+#### Insertion Sort - "Insert in sorted portion"
+
+- **Pattern**: Take element → Find position → Shift and insert
+- **Mnemonic**: "INSERT like sorting playing cards"
+- **Key Loop**: Inner while loop shifts elements backward
+
+### Advanced Algorithms
+
+#### Merge Sort - "Divide and Conquer"
+
+- **Pattern**: Divide → Sort → Merge
+- **Mnemonic**: "MERGE two sorted halves"
+- **Key**: Always O(n log n), uses extra space
+
+#### Quick Sort - "Pivot and Partition"
+
+- **Pattern**: Choose pivot → Partition → Recurse
+- **Mnemonic**: "QUICK with good pivot choice"
+- **Key**: In-place, but O(n²) in worst case
+
+## Common Interview Questions
+
+1. **Which is most efficient for small arrays?** Insertion Sort
+2. **Which requires exactly n-1 swaps?** Selection Sort
+3. **Which can detect if array is already sorted?** Bubble Sort (optimized)
+4. **Which guarantees O(n log n) performance?** Merge Sort
+5. **Which is fastest on average for large datasets?** Quick Sort
+6. **Which algorithms are stable?** Bubble Sort, Insertion Sort, Merge Sort
+7. **Which uses least extra memory?** Selection Sort, Bubble Sort, Insertion Sort
+8. **Best for nearly sorted data?** Insertion Sort
+9. **Best for external sorting?** Merge Sort
+10. **Most commonly used in practice?** Quick Sort variations
+
+## Quick Debug Checklist
+
+- ✅ Array bounds (0 to n-1)
+- ✅ Loop termination conditions
+- ✅ Swap function correctness
+- ✅ Handle single element/empty arrays
+- ✅ Verify stability requirements
+
+## Time Complexity Cheat Sheet
+
+```text
+Basic Algorithms (O(n²)):
+Selection Sort:  Always O(n²)
+Bubble Sort:     Best O(n), Avg/Worst O(n²) 
+Insertion Sort:  Best O(n), Avg/Worst O(n²)
+
+Advanced Algorithms (O(n log n)):
+Merge Sort:      Always O(n log n)
+Quick Sort:      Best/Avg O(n log n), Worst O(n²)
+```
+
+## Key Implementation Points
+
+### Recursive vs Iterative
+
+- **Basic algorithms**: Both versions exist, iterative more common
+- **Advanced algorithms**: Naturally recursive (divide-and-conquer)
+- **Tail recursion**: Can be optimized to iterative
+
+### Important Edge Cases
+
+- Empty array (n = 0)
+- Single element (n = 1)
+- Already sorted array
+- Reverse sorted array
+- All elements same
+- Array with duplicates
+
+**Remember**:
+
+- Only optimized Bubble Sort and Insertion Sort achieve O(n) best case
+- Merge Sort guarantees O(n log n) but uses O(n) space
+- Quick Sort is fastest on average but has O(n²) worst case
